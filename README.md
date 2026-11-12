@@ -20,7 +20,7 @@ Things that follow from "it sits for years":
 - Register it, then sign in with it once before putting it away. A backup that was never tested isn't one.
 - Keep another way in as well (the service's recovery codes, or a second card). A single card can be lost or fail like anything else.
 - If you set a PIN, write it down with the card or somewhere you'll find it. Eight wrong tries blocks it, and a forgotten PIN is the likeliest way this card lets you down.
-- The chip's data retention is finite. I haven't looked up the figure for the P5CD081, so check the datasheet before trusting one for a decade.
+- The chip's data retention is finite, but long: NXP's short data sheet for the P5Cx081 family (Rev. 3.2) gives 25 years minimum at 55 °C, and 500,000 write cycles of EEPROM endurance. Every signature writes to EEPROM, so the endurance figure matters in principle, but not at backup-card usage.
 
 ## Status
 
