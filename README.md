@@ -4,6 +4,24 @@ A WebAuthn authenticator applet for the NXP P5CD081 (JCOP 2.4.1, JavaCard 2.2.2)
 
 This is the second try. The first one lives in `/Volumes/Projects/javacard/P5CD081/passkey_no_workey` and is kept as it was: most of the code here started as a copy of it. That one passed libfido2 and then never worked in a browser. This one registers and signs in through Apple's WebAuthn stack, which is what Safari and Firefox on macOS use.
 
+## What this is for
+
+A break-glass backup. One card holds one passkey for one service, gets a label saying which, and goes in a drawer or a safe. It comes out when the phone is lost or the everyday key is gone, and that might be years later.
+
+It is not meant to be a daily security key, and the design leans on that:
+
+- **One credential per card, and it won't be overwritten.** A card labelled "GitHub" should still hold the GitHub credential when you need it, so a registration from anywhere else is refused once the slot is used.
+- **Where the card is kept is the security.** The card says the user was verified without checking anything, and the PIN exchange can be read by someone capturing the NFC traffic. Both are fine for a card in a safe and wrong for a card on a keyring.
+- **Slow is fine.** About a second to sign in, on a path used once in a long while.
+- **No sync, no copy.** The key is generated on the card and never leaves it. A second backup is a second card, registered separately.
+
+Things that follow from "it sits for years":
+
+- Register it, then sign in with it once before putting it away. A backup that was never tested isn't one.
+- Keep another way in as well (the service's recovery codes, or a second card). A single card can be lost or fail like anything else.
+- If you set a PIN, write it down with the card or somewhere you'll find it. Eight wrong tries blocks it, and a forgotten PIN is the likeliest way this card lets you down.
+- The chip's data retention is finite. I haven't looked up the figure for the P5CD081, so check the datasheet before trusting one for a decade.
+
 ## Status
 
 Checked on a real card (unfused, default keys, ACR1555):
