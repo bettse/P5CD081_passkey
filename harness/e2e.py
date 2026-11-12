@@ -8,6 +8,8 @@ card on the reader, and verifies as a relying party would:
     from the APDU trace because WebKit strips attestation down to "none"
   - the assertion signature, against the public key from the registration
 
+Each round wipes the card first: a full card refuses new registrations.
+
 Usage: e2e.py [rpId] [--rounds N] [--no-rk]
 """
 import hashlib
@@ -23,6 +25,9 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "..", "tools"))
+import card_reset  # noqa: E402
+
 WKFIDO = os.path.join(HERE, "wkfido")
 
 
@@ -79,6 +84,9 @@ def one_round(rp, rk, n):
             fails.append(name)
 
     print(f"round {n}: {rp}")
+    # With WKFIDO_PIN the card gets that PIN back after the wipe, so the run
+    # is against a PIN-protected card.
+    card_reset.reset(pin=os.environ.get("WKFIDO_PIN"))
     args = ["create", rp] + (["--rk"] if rk else [])
     reg, trace, dt, err = run(*args)
     check("registration completes through WebKit", reg.get("ok", False),

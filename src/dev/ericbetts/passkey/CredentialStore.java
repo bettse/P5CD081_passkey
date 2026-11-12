@@ -58,19 +58,15 @@ public class CredentialStore {
      * requires: a site re-registering the same user gets one credential, not two.
      * Otherwise the first free slot.
      *
-     * On a single-slot card a new registration always replaces the old one. The
-     * alternative is a card that refuses every registration after the first
-     * until someone resets it, which is not a useful device. With more than one
-     * slot a full card says so instead, because silently evicting a credential
-     * the user still relies on would be worse than failing.
+     * A full card says so, and that includes a single-slot card holding its one
+     * credential. Evicting a credential the user still relies on because a
+     * different site asked to register would be worse than failing. Freeing a
+     * slot is an explicit act: authenticatorReset, or the vendor DELETE.
      *
      * @return the slot index, or -1 when the card is full
      */
     public short slotForRegistration(byte[] rpIdHash, short rpIdHashOff,
                                      byte[] userId, short userIdOff, short userIdLen) {
-        if (Const.SLOTS == (short) 1) {
-            return (short) 0;
-        }
         if (userIdLen > (short) 0) {
             for (short i = (short) 0; i < Const.SLOTS; i++) {
                 if (slots[i].matchesRp(rpIdHash, rpIdHashOff)

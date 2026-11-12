@@ -5,7 +5,8 @@
 #   libfido2_check.sh            no PIN
 #   libfido2_check.sh 1234       also set that PIN first and use it throughout
 #
-# Setting a PIN changes the card. `make reinstall` puts it back.
+# This wipes the card first (a full card refuses new registrations), and
+# setting a PIN changes it again. tools/card_reset.py puts it back.
 reader=${READER:-"ACS ACR1555 1S CL Reader(1)"}
 pin=$1
 dev=$(fido2-token -L | ag -F "$reader" | cut -d: -f1-2)
@@ -14,6 +15,7 @@ if [[ -z $dev ]]; then
     fido2-token -L
     exit 1
 fi
+python3 "${0:a:h}/card_reset.py" || exit 1
 work=$(mktemp -d -t fido2check)
 cd "$work"
 fail=0

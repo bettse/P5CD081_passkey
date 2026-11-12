@@ -38,10 +38,9 @@ public class DiscoverableCredentialTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("a full multi-slot card says so instead of evicting")
+    @DisplayName("a full card says so instead of evicting")
     public void capacity() {
         int slots = slots();
-        assumeTrue(slots > 1, "a single-slot card replaces rather than filling up");
 
         for (int i = 0; i < slots; i++) {
             registerResident("site" + i + ".example", new byte[]{(byte) i});
@@ -54,19 +53,42 @@ public class DiscoverableCredentialTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("a single-slot card replaces its credential rather than refusing")
-    public void singleSlotReplaces() {
-        assumeTrue(slots() == 1, "only meaningful on a one-credential card");
+    @DisplayName("a full card keeps what it has when a different site asks to register")
+    public void fullCardKeepsItsCredentials() throws Exception {
+        int slots = slots();
+        AttestationObject first = registerResident("site0.example", new byte[]{0});
+        for (int i = 1; i < slots; i++) {
+            registerResident("site" + i + ".example", new byte[]{(byte) i});
+        }
 
-        AttestationObject first = registerResident("a.example", new byte[]{1});
-        AttestationObject second = registerResident("b.example", new byte[]{2});
+        assertEquals(CTAP2_ERR_KEY_STORE_FULL, ctap(CtapRequests.CMD_MAKE_CREDENTIAL,
+            CtapRequests.makeCredentialResident(hash(9), "other.example", new byte[]{99})).status);
+        // A non-discoverable registration needs a slot just the same.
+        assertEquals(CTAP2_ERR_KEY_STORE_FULL, ctap(CtapRequests.CMD_MAKE_CREDENTIAL,
+            CtapRequests.makeCredential(hash(9), "other.example", CtapRequests.ALG_ES256)).status);
+        assertEquals(slots, send(INS_GET_INFO, null)[4], "nothing was evicted");
 
-        assertFalse(Arrays.equals(first.coseKey.x, second.coseKey.x));
-        assertEquals(1, send(INS_GET_INFO, null)[4], "still one credential");
+        // The first credential is still there and still signs.
+        CtapResponse r = ctap(CtapRequests.CMD_GET_ASSERTION,
+            CtapRequests.getAssertion("site0.example", hash(11)));
+        assertEquals(CTAP2_OK, r.status);
+        Assertion assertion = Assertion.parse(r.cbor);
+        java.security.Signature v = java.security.Signature.getInstance("SHA256withECDSA");
+        v.initVerify(first.publicKey());
+        v.update(assertion.authData);
+        v.update(hash(11));
+        assertTrue(v.verify(assertion.signature));
+    }
 
-        // The first site's credential is gone, not hidden.
-        assertEquals(CTAP2_ERR_NO_CREDENTIALS, ctap(CtapRequests.CMD_GET_ASSERTION,
-            CtapRequests.getAssertion("a.example", hash(11))).status);
+    @Test
+    @DisplayName("reset is what frees a full card")
+    public void resetFreesTheCard() {
+        for (int i = 0; i < slots(); i++) {
+            registerResident("site" + i + ".example", new byte[]{(byte) i});
+        }
+        reselect();
+        assertEquals(CTAP2_OK, ctap(CtapRequests.CMD_RESET, null).status);
+        registerResident("other.example", new byte[]{99});
     }
 
     @Test

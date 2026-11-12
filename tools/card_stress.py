@@ -6,6 +6,8 @@ APDU framing Apple's stack uses, so it is quick enough to run hundreds of
 signatures. The simulator cannot stand in for this: it has a different RSA
 engine and a different interpreter, and the arithmetic is the part at risk.
 
+This wipes the card first: a full card refuses new registrations.
+
 Usage: card_stress.py [count] [reader substring]
 """
 import hashlib
@@ -19,6 +21,8 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 from smartcard.System import readers
+
+import card_reset
 
 COUNT = int(sys.argv[1]) if len(sys.argv) > 1 else 100
 READER = sys.argv[2] if len(sys.argv) > 2 else "CL Reader(1)"
@@ -50,6 +54,7 @@ def ctap(conn, command, body=None):
 
 
 def main():
+    card_reset.reset(READER)
     conn = connect()
     resp, sw1, sw2 = conn.transmit([0x00, 0xA4, 0x04, 0x00, len(FIDO_AID)] + list(FIDO_AID))
     print(f"select: {bytes(resp).decode(errors='replace')} {sw1:02X}{sw2:02X}")

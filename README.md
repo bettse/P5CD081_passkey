@@ -10,7 +10,7 @@ Checked on a real card (unfused, default keys, ACR1555):
 
 | Check | Result |
 |---|---|
-| Simulator tests (`make test`) | 115 pass, 10 skipped |
+| Simulator tests (`make test`) | 107 pass, 9 skipped (the skipped ones need more than one slot) |
 | 2000 signatures over 10 keys in the simulator | all verify |
 | 200 signatures on the card (`tools/card_stress.py 200`) | all verify, about 0.95 s each |
 | libfido2 register + assert, no PIN and with a PIN | pass |
@@ -78,13 +78,15 @@ make reinstall   # onto the card on the ACR1555, default keys
 python3 tools/card_stress.py 200
 tools/libfido2_check.sh          # or: tools/libfido2_check.sh 1234 to set and use a PIN
 python3 harness/e2e.py
+python3 tools/card_reset.py      # wipe credentials and PIN
 ```
 
 `build.xml` reads `ant-javacard.jar` and the JavaCard 2.2.2 SDK from the old project's folder rather than copying them (`-Dtoolchain=...` if that moves).
 
 ## Things that are deliberate, or at least known
 
-- **One credential.** `Const.SLOTS` is 1: registering again replaces it. Raising it is that one constant plus a reinstall.
+- **One credential, and it is not overwritten.** `Const.SLOTS` is 1. Once the slot is used, a registration for a different site (or a different user) is refused with "key store full" instead of replacing what is there. The same user at the same site re-registering does replace, as CTAP2 requires. To free the slot on purpose: `python3 tools/card_reset.py`, or `fido2-token -R`. Raising the slot count is that one constant plus a reinstall: a build with 48 installs on this card, and about 52 is the ceiling at roughly 1,190 bytes a slot.
+- **The test tools wipe the card.** `card_stress.py`, `libfido2_check.sh` and `e2e.py` all reset it first, since a full card would refuse their registrations. Don't point them at a card you care about.
 - **UV is claimed, not performed.** The card reports `uv: true` and sets the UV flag with no PIN asked, on the theory that this is a break-glass card whose security is where it is kept. `Const.CLAIM_USER_VERIFICATION` turns that off. Carried over from the first attempt.
 - **clientPIN gives no secrecy.** The card has no raw ECDH, so its key agreement private key is 1 and anyone watching the exchange can derive the shared secret. Also carried over.
 - **The stack is nearly full.** One extra call frame under getAssertion turned every signature into `6F00`. The signing path has since been flattened by three frames, but anything added under `Ctap2.emitAssertion` or `WebAuthn.buildAttestationObject` should be followed by `tools/card_stress.py`.
