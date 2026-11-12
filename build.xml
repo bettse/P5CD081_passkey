@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="passkey" default="build" basedir=".">
+
+    <!--
+      The ant-javacard jar and the JavaCard SDKs are read from the earlier
+      project rather than copied. Override with -Dtoolchain=... if it moves.
+    -->
+    <property name="toolchain" value="/Volumes/Projects/javacard/P5CD081/passkey_no_workey"/>
+
+    <taskdef name="buildJavacard" classname="pro.javacard.ant.JavaCard" classpath="${toolchain}/lib/ant-javacard.jar"/>
+
+    <!--
+      JavaCard 2.2.2 SDK: the P5CD081 runs JCOP 2.4.1, a JavaCard 2.2.2 platform.
+      The applet AID is the FIDO one, which is what a platform looks for.
+    -->
+    <target name="build" description="Generate .cap file">
+        <mkdir dir="build"/>
+        <buildJavacard jckit="${toolchain}/ext/sdks/jc222_kit">
+            <cap targetsdk="${toolchain}/ext/sdks/jc222_kit"
+                 aid="A0:00:00:06:47:2E:50:41:53:53"
+                 output="build/passkey.cap"
+                 sources="src/dev/ericbetts/passkey"
+                 version="1.0">
+                <applet class="dev.ericbetts.passkey.Passkey"
+                        aid="A0:00:00:06:47:2F:00:01"/>
+            </cap>
+        </buildJavacard>
+    </target>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+</project>

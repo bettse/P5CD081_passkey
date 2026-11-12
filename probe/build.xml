@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ecprobe" default="build" basedir=".">
+
+    <!-- Reuses the ant-javacard jar and JavaCard 2.2.2 SDK from the earlier passkey project. -->
+    <property name="old" value="/Volumes/Projects/javacard/P5CD081/passkey_no_workey"/>
+
+    <taskdef name="buildJavacard" classname="pro.javacard.ant.JavaCard" classpath="${old}/lib/ant-javacard.jar"/>
+
+    <target name="build">
+        <mkdir dir="build"/>
+        <buildJavacard jckit="${old}/ext/sdks/jc222_kit">
+            <cap targetsdk="${old}/ext/sdks/jc222_kit"
+                 aid="F0:45:43:50:52:4F:42:45"
+                 output="build/ecprobe.cap"
+                 sources="ecprobe-src"
+                 version="1.0">
+                <applet class="dev.ericbetts.ecprobe.EcProbe"
+                        aid="F0:45:43:50:52:4F:42:45:01"/>
+            </cap>
+        </buildJavacard>
+    </target>
+
+</project>

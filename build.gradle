@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    maven { url 'https://mvn.javacard.pro/maven/' }
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+            include 'dev/ericbetts/passkey/**'
+        }
+    }
+    test {
+        java {
+            srcDir 'src'
+            include 'test/**'
+        }
+    }
+}
+
+dependencies {
+    // JCardEngine provides the JavaCard API plus the simulator the tests run against
+    implementation 'com.github.martinpaljak:jcardengine:26.02.19'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(18)
+    }
+}

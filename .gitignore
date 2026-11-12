@@ -1,0 +1,7 @@
+build/
+.gradle/
+tmp/
+harness/wkfido
+probe/build/
+__pycache__/
+.DS_Store
