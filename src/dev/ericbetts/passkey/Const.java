@@ -193,19 +193,19 @@ public final class Const {
     public static final byte CTAP2_ERR_UNSUPPORTED_ALGORITHM = (byte) 0x26;
     public static final byte CTAP2_ERR_OPERATION_DENIED = (byte) 0x27;
     public static final byte CTAP2_ERR_KEY_STORE_FULL = (byte) 0x28;
-    public static final byte CTAP2_ERR_NO_OPERATION_PENDING = (byte) 0x2B;
-    public static final byte CTAP2_ERR_UNSUPPORTED_OPTION = (byte) 0x2C;
-    public static final byte CTAP2_ERR_INVALID_OPTION = (byte) 0x2D;
-    public static final byte CTAP2_ERR_NO_CREDENTIALS = (byte) 0x2F;
-    public static final byte CTAP2_ERR_NOT_ALLOWED = (byte) 0x31;
-    public static final byte CTAP2_ERR_PIN_INVALID = (byte) 0x32;
-    public static final byte CTAP2_ERR_PIN_BLOCKED = (byte) 0x33;
-    public static final byte CTAP2_ERR_PIN_AUTH_INVALID = (byte) 0x34;
-    public static final byte CTAP2_ERR_PIN_AUTH_BLOCKED = (byte) 0x35;
-    public static final byte CTAP2_ERR_PIN_NOT_SET = (byte) 0x36;
-    public static final byte CTAP2_ERR_PIN_REQUIRED = (byte) 0x37;
-    public static final byte CTAP2_ERR_PIN_POLICY_VIOLATION = (byte) 0x38;
-    public static final byte CTAP2_ERR_REQUEST_TOO_LARGE = (byte) 0x3A;
+    public static final byte CTAP2_ERR_NO_OPERATION_PENDING = (byte) 0x2A;
+    public static final byte CTAP2_ERR_UNSUPPORTED_OPTION = (byte) 0x2B;
+    public static final byte CTAP2_ERR_INVALID_OPTION = (byte) 0x2C;
+    public static final byte CTAP2_ERR_NO_CREDENTIALS = (byte) 0x2E;
+    public static final byte CTAP2_ERR_NOT_ALLOWED = (byte) 0x30;
+    public static final byte CTAP2_ERR_PIN_INVALID = (byte) 0x31;
+    public static final byte CTAP2_ERR_PIN_BLOCKED = (byte) 0x32;
+    public static final byte CTAP2_ERR_PIN_AUTH_INVALID = (byte) 0x33;
+    public static final byte CTAP2_ERR_PIN_AUTH_BLOCKED = (byte) 0x34;
+    public static final byte CTAP2_ERR_PIN_NOT_SET = (byte) 0x35;
+    public static final byte CTAP2_ERR_PIN_REQUIRED = (byte) 0x36;
+    public static final byte CTAP2_ERR_PIN_POLICY_VIOLATION = (byte) 0x37;
+    public static final byte CTAP2_ERR_REQUEST_TOO_LARGE = (byte) 0x39;
 
     /**
      * Largest CTAP2 request we will assemble from chained APDUs, and what

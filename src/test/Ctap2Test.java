@@ -25,9 +25,9 @@ public class Ctap2Test extends BaseTest {
     private static final byte CTAP1_ERR_INVALID_COMMAND = 0x01;
     private static final byte CTAP2_ERR_MISSING_PARAMETER = 0x14;
     private static final byte CTAP2_ERR_UNSUPPORTED_ALGORITHM = 0x26;
-    private static final byte CTAP2_ERR_NO_CREDENTIALS = 0x2F;
-    private static final byte CTAP2_ERR_NOT_ALLOWED = 0x31;
-    private static final byte CTAP2_ERR_PIN_REQUIRED = 0x37;
+    private static final byte CTAP2_ERR_NO_CREDENTIALS = 0x2E;
+    private static final byte CTAP2_ERR_NOT_ALLOWED = 0x30;
+    private static final byte CTAP2_ERR_PIN_REQUIRED = 0x36;
 
     private static final String RP_ID = "example.com";
 

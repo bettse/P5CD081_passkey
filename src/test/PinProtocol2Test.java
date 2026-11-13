@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PinProtocol2Test extends BaseTest {
 
     private static final byte CTAP2_OK = 0x00;
-    private static final byte CTAP2_ERR_PIN_INVALID = 0x32;
-    private static final byte CTAP2_ERR_PIN_AUTH_INVALID = 0x34;
-    private static final byte CTAP2_ERR_PIN_POLICY_VIOLATION = 0x38;
+    private static final byte CTAP2_ERR_PIN_INVALID = 0x31;
+    private static final byte CTAP2_ERR_PIN_AUTH_INVALID = 0x33;
+    private static final byte CTAP2_ERR_PIN_POLICY_VIOLATION = 0x37;
 
     private static final String RP_ID = "example.com";
     private static final String THE_PIN = "1234";

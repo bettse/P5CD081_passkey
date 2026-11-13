@@ -25,8 +25,8 @@ public class DiscoverableCredentialTest extends BaseTest {
     private static final byte CTAP2_OK = 0x00;
     private static final byte CTAP2_ERR_CREDENTIAL_EXCLUDED = 0x19;
     private static final byte CTAP2_ERR_KEY_STORE_FULL = 0x28;
-    private static final byte CTAP2_ERR_NO_CREDENTIALS = 0x2F;
-    private static final byte CTAP2_ERR_NOT_ALLOWED = 0x31;
+    private static final byte CTAP2_ERR_NO_CREDENTIALS = 0x2E;
+    private static final byte CTAP2_ERR_NOT_ALLOWED = 0x30;
 
     private static final String RP_ID = "example.com";
 
