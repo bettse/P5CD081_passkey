@@ -4,7 +4,34 @@
 
 A passkey applet for the NXP P5CD081 (JCOP 2.4.1, JavaCard 2.2.2). It talks CTAP2 over NFC, holds one discoverable credential, and signs ES256.
 
-This is my second try. The first one is in `/Volumes/Projects/javacard/P5CD081/passkey_no_workey` and I'm leaving it alone as an artifact: most of the code here started as a copy of it. That one passed libfido2 and then never worked in a browser. This one registers and signs in through Apple's WebAuthn stack, which is what Safari and Firefox on macOS use.
+This is my second try. The first one (same card, RS256) passed libfido2 and then never worked in a browser. Most of the code here started as a copy of it. This one registers and signs in through Apple's WebAuthn stack, which is what Safari and Firefox on macOS use.
+
+## The card
+
+| | |
+|---|---|
+| Chip | NXP P5CD081, dual interface (contact and contactless), 81 KB EEPROM, roughly 6 KB RAM |
+| OS | JCOP 2.4.1 R3 |
+| JavaCard API | 2.2.2 (built against `jc222_kit`) |
+| GlobalPlatform | 2.1.1, SCP02 |
+| ATR (contactless) | `3B8880014A434F50763234315E` |
+
+What the applet uses from the card:
+
+- `javacardx.apdu.ExtendedLength`
+- P-256 key pair generation (`KeyPair.ALG_EC_FP`, 256 bit), with the private scalar readable through `getS`
+- raw RSA at 512 bits (`Cipher.ALG_RSA_NOPAD`), which is the big-number engine for the signing math
+- `MessageDigest.ALG_SHA_256`
+- AES-256 CBC with no padding, for the PIN protocol
+- `RandomData.ALG_SECURE_RANDOM`
+
+What the card doesn't have, and what stands in for it:
+
+- `Signature.ALG_ECDSA_SHA_256`: no (only ECDSA with SHA-1). See "ES256 without ECDSA" below.
+- HMAC-SHA-256: no. `Hmac.java` does it on top of the SHA-256 digest.
+- `KeyAgreement.ALG_EC_SVDP_DH_PLAIN` (raw ECDH): no. JCAlgTest lists it as supported, but asking for it on the card throws `NO_SUCH_ALGORITHM`. The applet tries it at install and falls back to a fixed key when it's missing, which is the "PIN can be sniffed" item further down. On a card that has it, the same CAP should take the real path (the simulator does), but I haven't tried one.
+
+It's only been run on this chip. Another JavaCard 2.2.2 card with the same pieces might work, but the stack depth and the RSA engine quirks are things I only know for this one.
 
 ## What it's for
 
@@ -112,7 +139,9 @@ python3 harness/e2e.py
 python3 tools/card_reset.py      # wipe credentials and PIN
 ```
 
-`build.xml` reads `ant-javacard.jar` and the JavaCard 2.2.2 SDK from the old project's folder instead of copying them (`-Dtoolchain=...` if that moves).
+The JavaCard SDKs are a git submodule (`ext/sdks`), so clone with `--recurse-submodules`, or run `git submodule update --init` after. `ant-javacard.jar` is in `lib/`.
+
+You need `ant`, Java 8 for the CAP and Java 18 for the simulator tests, and [GlobalPlatformPro](https://github.com/martinpaljak/GlobalPlatformPro) to install. The `Makefile` has my paths for those and my reader's name at the top, so expect to edit it. The Python tools want `pyscard`, `cbor2` and `cryptography`. The harness is macOS only.
 
 ## Things that are deliberate, or at least known
 

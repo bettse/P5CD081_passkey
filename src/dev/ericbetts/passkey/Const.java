@@ -159,8 +159,10 @@ public final class Const {
 
     // ---- values the JavaCard 2.2.2 SDK is too old to name ----
     //
-    // The P5CD081 supports both of these (JCAlgTest confirms it), but the 2.2.2
-    // headers predate them, so they go in as literals rather than constants.
+    // The 2.2.2 headers predate these, so they go in as literals rather than
+    // constants. The P5CD081 has 256-bit EC keys. It does not have
+    // ALG_EC_SVDP_DH_PLAIN, whatever JCAlgTest says: getInstance throws
+    // NO_SUCH_ALGORITHM, and Pin falls back when it does.
 
     /** KeyAgreement.ALG_EC_SVDP_DH_PLAIN, added in JavaCard 3.0.1. */
     public static final byte ALG_EC_SVDP_DH_PLAIN = (byte) 3;
