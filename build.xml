@@ -2,10 +2,10 @@
 <project name="passkey" default="build" basedir=".">
 
     <!--
-      The ant-javacard jar and the JavaCard SDKs are read from the earlier
-      project rather than copied. Override with -Dtoolchain=... if it moves.
+      ant-javacard is in lib/, and the JavaCard SDKs are the ext/sdks submodule
+      (see the README if ext/sdks is empty).
     -->
-    <property name="toolchain" value="/Volumes/Projects/javacard/P5CD081/passkey_no_workey"/>
+    <property name="toolchain" value="${basedir}"/>
 
     <taskdef name="buildJavacard" classname="pro.javacard.ant.JavaCard" classpath="${toolchain}/lib/ant-javacard.jar"/>
 

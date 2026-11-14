@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ecprobe" default="build" basedir=".">
 
-    <!-- Reuses the ant-javacard jar and JavaCard 2.2.2 SDK from the earlier passkey project. -->
-    <property name="old" value="/Volumes/Projects/javacard/P5CD081/passkey_no_workey"/>
+    <!-- Uses the ant-javacard jar and JavaCard 2.2.2 SDK from the main project. -->
+    <property name="old" value="${basedir}/.."/>
 
     <taskdef name="buildJavacard" classname="pro.javacard.ant.JavaCard" classpath="${old}/lib/ant-javacard.jar"/>
 
